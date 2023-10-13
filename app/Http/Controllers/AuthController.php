@@ -15,6 +15,7 @@ class AuthController extends Controller
         $this->middleware('auth:sanctum')->only('someProtectedRoute');
     }
 
+    // function register
     public function register(Request $request)
     {
         $request->validate([
@@ -31,6 +32,7 @@ class AuthController extends Controller
             'name'      => $request->input('name'),
             'email'     => $request->input('email'),
             'password'  => Hash::make($request->input('password')),
+            'id_role'   => 2, // ID 2 untuk peran "user"
         ]);
 
         $user->save();
@@ -43,6 +45,7 @@ class AuthController extends Controller
         );
     }
 
+    // function login
     public function login(Request $request)
     {
         $request->validate([
@@ -78,12 +81,20 @@ class AuthController extends Controller
         );
     }
 
+    //function get user login
+    public function getLoggedInUser(Request $request)
+    {
+        $user = $request->user();
+        return response()->json($user);
+    }
+
+    // function logout
     public function logout(Request $request)
     {
         if (auth()->check()) {
             $request->user()->currentAccessToken()->delete();
         }
-    
+
         return response()->json([
             'message' => 'Logged out successfully'
         ], 200);
