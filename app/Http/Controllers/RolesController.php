@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Roles;
+use Illuminate\Database\QueryException;
 
 class RolesController extends Controller
 {
@@ -25,12 +26,21 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $role = Roles::create($request->all());
+        try {
+            $role = Roles::create($request->all());
 
-        return response()->json([
+            return response()->json([
                 "roles"     => $role,
                 "message"   => "Daftar peran berhasil ditambahkan"
             ], 200);
+            
+        } catch (QueryException $e) {
+            // Tangani pengecualian (exception) yang terjadi saat mencoba menyimpan data
+            return response()->json([
+                "error"     => "Gagal menambahkan peran",
+                "message"   => $e->getMessage() // Ini hanya contoh, Anda bisa menyusun pesan error sesuai kebutuhan
+            ], 500); // Gunakan kode status HTTP 500 untuk kesalahan server
+        }
     }
 
     /**
@@ -41,7 +51,7 @@ class RolesController extends Controller
         $role = Roles::findOrFail($id);
         $role->update($request->all());
 
-        return response()->json(  [
+        return response()->json([
             "roles"     => $role,
             "message"   => "Daftar peran berhasil diubah"
         ], 200);
@@ -55,7 +65,7 @@ class RolesController extends Controller
         $role = Roles::findOrFail($id);
         $role->delete();
 
-        return response()->json(  [
+        return response()->json([
             "roles"     => $role,
             "message"   => "Daftar peran berhasil dihapus"
         ], 200);
