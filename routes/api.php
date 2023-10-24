@@ -22,10 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // route Auth
-Route::post('/register', [AuthController::class, 'register'])->name('api.register');
-Route::post('/login', [AuthController::class, 'login'])->name('api.login');
-Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'getLoggedInUser']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register')->name('api.register');
+    Route::post('/login', 'login')->name('api.login');
+    Route::get('/user', 'getLoggedInUser')->middleware('auth:sanctum');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum')->name('api.logout');
+});
 
 //route CRUD Roles
 Route::resource('roles', RolesController::class);
