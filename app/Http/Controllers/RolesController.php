@@ -72,12 +72,23 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        $role = Roles::findOrFail($id);
-        $role->delete();
 
-        return response()->json([
-            "roles"     => $role,
-            "message"   => "Daftar peran berhasil dihapus"
-        ], 200);
+        try {
+            $role = Roles::findOrFail($id);
+            $role->delete();
+    
+            return response()->json([
+                "roles"     => $role,
+                "message"   => "Daftar peran berhasil dihapus"
+            ], 200);
+            
+        } catch (QueryException $e) {
+            // Tangani pengecualian (exception) yang terjadi saat mencoba menyimpan data
+            return response()->json([
+                "error"     => "Daftar peran gagal dihapus",
+                "message"   => $e->getMessage() // Ini hanya contoh, Anda bisa menyusun pesan error sesuai kebutuhan
+            ], 500); // Gunakan kode status HTTP 500 untuk kesalahan server
+        }
+        
     }
 }
