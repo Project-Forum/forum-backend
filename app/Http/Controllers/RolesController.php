@@ -58,11 +58,11 @@ class RolesController extends Controller
             ], 200);
             
         } catch (QueryException $e) {
-            // Tangani pengecualian (exception) yang terjadi saat mencoba menyimpan data
+    
             return response()->json([
                 "error"     => "Daftar peran gagal diubah",
-                "message"   => $e->getMessage() // Ini hanya contoh, Anda bisa menyusun pesan error sesuai kebutuhan
-            ], 500); // Gunakan kode status HTTP 500 untuk kesalahan server
+                "message"   => $e->getMessage() 
+            ], 500);
         }
         
     }
@@ -83,11 +83,10 @@ class RolesController extends Controller
             ], 200);
             
         } catch (QueryException $e) {
-            // Tangani pengecualian (exception) yang terjadi saat mencoba menyimpan data
             return response()->json([
                 "error"     => "Daftar peran gagal dihapus",
-                "message"   => $e->getMessage() // Ini hanya contoh, Anda bisa menyusun pesan error sesuai kebutuhan
-            ], 500); // Gunakan kode status HTTP 500 untuk kesalahan server
+                "message"   => $e->getMessage() 
+            ], 500); 
         }
         
     }
