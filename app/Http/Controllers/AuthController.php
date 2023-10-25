@@ -91,12 +91,22 @@ class AuthController extends Controller
     // function logout
     public function logout(Request $request)
     {
-        if (auth()->check()) {
-            $request->user()->currentAccessToken()->delete();
-        }
+        try {
+            if (auth()->check()) {
+                $request->user()->currentAccessToken()->delete();
+            }
+    
+            return response()->json([
+                'message' => 'Logged out successfully'
+            ], 200);
+            
+        } catch (QueryException $e) {
 
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ], 200);
+            return response()->json([
+                "error"     => "Gagal Log Out",
+                "message"   => $e->getMessage() 
+            ], 500); 
+        }
+        
     }
 }
