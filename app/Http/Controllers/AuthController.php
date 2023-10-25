@@ -91,12 +91,22 @@ class AuthController extends Controller
     // function logout
     public function logout(Request $request)
     {
-        if (auth()->check()) {
-            $request->user()->currentAccessToken()->delete();
+        try {
+            if (auth()->check()) {
+                $request->user()->currentAccessToken()->delete();
+            }
+    
+            return response()->json([
+                'message' => 'Logged out successfully'
+            ], 200);
+            
+        } catch (QueryException $e) {
+            // Tangani pengecualian (exception) yang terjadi saat mencoba menyimpan data
+            return response()->json([
+                "error"     => "Gagal Log Out",
+                "message"   => $e->getMessage() // Ini hanya contoh, Anda bisa menyusun pesan error sesuai kebutuhan
+            ], 500); // Gunakan kode status HTTP 500 untuk kesalahan server
         }
-
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ], 200);
+        
     }
 }
