@@ -18,31 +18,41 @@ class AuthController extends Controller
     // function register
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
-        //declare uuid
-        $uuid = Str::uuid();
-
-        $user = new User([
-            'uuid'      => $uuid,
-            'name'      => $request->input('name'),
-            'email'     => $request->input('email'),
-            'password'  => Hash::make($request->input('password')),
-            'id_role'   => 2, // ID 2 untuk peran "user"
-        ]);
-
-        $user->save();
-
-        return response()->json(
-            [
-                'message' => 'User registered successfully'
-            ],
-            201
-        );
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|string|min:6',
+            ]);
+    
+            //declare uuid
+            $uuid = Str::uuid();
+    
+            $user = new User([
+                'uuid'      => $uuid,
+                'name'      => $request->input('name'),
+                'email'     => $request->input('email'),
+                'password'  => Hash::make($request->input('password')),
+                'id_role'   => 2, // ID 2 untuk peran "user"
+            ]);
+    
+            $user->save();
+    
+            return response()->json(
+                [
+                    'message' => 'User registered successfully'
+                ],
+                201
+            );
+            
+        } catch (QueryException $e) {
+    
+            return response()->json([
+                "error"     => "Gagal melakukan register",
+                "message"   => $e->getMessage() 
+            ], 500);
+        }
+       
     }
 
     // function login
